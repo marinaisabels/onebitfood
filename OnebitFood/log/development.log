@@ -1,0 +1,854 @@
+  [1m[35m (0.9ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (4.6ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (4.8ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateCategories (20210511004827)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE TABLE "categories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20210511004827"]]
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateRestaurants (20210511005047)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (1.6ms)[0m  [1m[35mCREATE TABLE "restaurants" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "description" text, "delivery_tax" float, "city" varchar, "street" varchar, "neighborhood" varchar, "number" varchar, "complement" varchar, "category_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_08f808c5fb"
+FOREIGN KEY ("category_id")
+  REFERENCES "categories" ("id")
+)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE INDEX "index_restaurants_on_category_id" ON "restaurants" ("category_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.7ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20210511005047"]]
+  [1m[36mTRANSACTION (15.9ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateProductCategories (20210511005120)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE TABLE "product_categories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "restaurant_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_15a29c3a40"
+FOREIGN KEY ("restaurant_id")
+  REFERENCES "restaurants" ("id")
+)[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE INDEX "index_product_categories_on_restaurant_id" ON "product_categories" ("restaurant_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20210511005120"]]
+  [1m[36mTRANSACTION (4.0ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateProducts (20210511005221)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.5ms)[0m  [1m[35mCREATE TABLE "products" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "description" text, "price" float, "product_category_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_efe167855e"
+FOREIGN KEY ("product_category_id")
+  REFERENCES "product_categories" ("id")
+)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE INDEX "index_products_on_product_category_id" ON "products" ("product_category_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (1.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20210511005221"]]
+  [1m[36mTRANSACTION (3.9ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateOrders (20210511005349)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE TABLE "orders" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "phone_number" varchar, "total_value" float, "city" varchar, "neighborhood" varchar, "number" varchar, "complement" varchar, "status" integer DEFAULT 0, "restaurant_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_9af093cac8"
+FOREIGN KEY ("restaurant_id")
+  REFERENCES "restaurants" ("id")
+)[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE INDEX "index_orders_on_restaurant_id" ON "orders" ("restaurant_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20210511005349"]]
+  [1m[36mTRANSACTION (4.0ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateOrderProducts (20210511005425)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "order_products" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "quantity" integer, "order_id" integer NOT NULL, "product_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_f40b8ccee4"
+FOREIGN KEY ("order_id")
+  REFERENCES "orders" ("id")
+, CONSTRAINT "fk_rails_96c0709f78"
+FOREIGN KEY ("product_id")
+  REFERENCES "products" ("id")
+)[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE INDEX "index_order_products_on_order_id" ON "order_products" ("order_id")[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE INDEX "index_order_products_on_product_id" ON "order_products" ("product_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20210511005425"]]
+  [1m[36mTRANSACTION (6.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.5ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.5ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["key", "environment"], ["value", "development"], ["created_at", "2021-05-11 00:55:36.604533"], ["updated_at", "2021-05-11 00:55:36.604533"]]
+  [1m[36mTRANSACTION (6.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateActiveStorageTables (20210511012049)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "active_storage_blobs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "key" varchar NOT NULL, "filename" varchar NOT NULL, "content_type" varchar, "metadata" text, "service_name" varchar NOT NULL, "byte_size" bigint NOT NULL, "checksum" varchar NOT NULL, "created_at" datetime NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_blobs_on_key" ON "active_storage_blobs" ("key")[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "active_storage_attachments" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar NOT NULL, "record_type" varchar NOT NULL, "record_id" integer NOT NULL, "blob_id" integer NOT NULL, "created_at" datetime NOT NULL, CONSTRAINT "fk_rails_c3b3935057"
+FOREIGN KEY ("blob_id")
+  REFERENCES "active_storage_blobs" ("id")
+)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_active_storage_attachments_on_blob_id" ON "active_storage_attachments" ("blob_id")[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_attachments_uniqueness" ON "active_storage_attachments" ("record_type", "record_id", "name", "blob_id")[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE TABLE "active_storage_variant_records" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "blob_id" integer NOT NULL, "variation_digest" varchar NOT NULL, CONSTRAINT "fk_rails_993965df05"
+FOREIGN KEY ("blob_id")
+  REFERENCES "active_storage_blobs" ("id")
+)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_variant_records_uniqueness" ON "active_storage_variant_records" ("blob_id", "variation_digest")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20210511012049"]]
+  [1m[36mTRANSACTION (22.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/" for ::1 at 2021-05-10 22:26:01 -0300
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /home/marinasantos/.rvm/gems/ruby-3.0.1/gems/railties-6.1.3.2/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /home/marinasantos/.rvm/gems/ruby-3.0.1/gems/railties-6.1.3.2/lib/rails/templates/rails/welcome/index.html.erb (Duration: 9.3ms | Allocations: 524)
+Completed 200 OK in 28ms (Views: 19.1ms | ActiveRecord: 0.0ms | Allocations: 4401)
+
+
+Started GET "/favicon.ico" for ::1 at 2021-05-10 22:26:01 -0300
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[36mProduct Load (0.2ms)[0m  [1m[34mSELECT "products".* FROM "products"[0m
+  [1m[36mProductCategory Load (0.3ms)[0m  [1m[34mSELECT "product_categories".* FROM "product_categories"[0m
+  [1m[36mRestaurant Load (0.3ms)[0m  [1m[34mSELECT "restaurants".* FROM "restaurants"[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.4ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 1], ["title", "mexicana"], ["created_at", "2021-05-11 12:59:18.342872"], ["updated_at", "2021-05-11 12:59:18.342872"]]
+  [1m[36mTRANSACTION (5.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.3ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 1], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.4ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 1], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (0.3ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "hdgrruwhj1gytk0gk66p0xgjhlv1"], ["filename", "mexican.jpg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 164392], ["checksum", "GQF9otxCszErHnwhJPtaXQ=="], ["created_at", "2021-05-11 12:59:18.462862"]]
+  [1m[36mActiveStorage::Attachment Create (0.1ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 1], ["blob_id", 1], ["created_at", "2021-05-11 12:59:18.465087"]]
+  [1m[36mCategory Update (0.1ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 12:59:18.467303"], ["id", 1]]
+  [1m[36mTRANSACTION (3.7ms)[0m  [1m[36mcommit transaction[0m
+[36m  Disk Storage (1.6ms) [0m[32mUploaded file to key: hdgrruwhj1gytk0gk66p0xgjhlv1 (checksum: GQF9otxCszErHnwhJPtaXQ==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: c44ccc24-bfa6-4c6b-b787-0c6840eb5813) to Async(default) with arguments: #<GlobalID:0x000055d187887d78 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/1>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.3ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 2], ["title", "italiana"], ["created_at", "2021-05-11 12:59:18.480058"], ["updated_at", "2021-05-11 12:59:18.480058"]]
+  [1m[36mTRANSACTION (4.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [c44ccc24-bfa6-4c6b-b787-0c6840eb5813] Performing ActiveStorage::AnalyzeJob (Job ID: c44ccc24-bfa6-4c6b-b787-0c6840eb5813) from Async(default) enqueued at 2021-05-11T12:59:18Z with arguments: #<GlobalID:0x00007f01a8071ce0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/1>>
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 2], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 2], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (0.2ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "mvvrs8qcbfyproap8p26w4qa2i8t"], ["filename", "italian.jpeg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 125653], ["checksum", "VkJVIGot5n2w09P8J9LMJw=="], ["created_at", "2021-05-11 12:59:18.531336"]]
+  [1m[36mActiveStorage::Attachment Create (0.1ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 2], ["blob_id", 2], ["created_at", "2021-05-11 12:59:18.534911"]]
+  [1m[36mCategory Update (0.1ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 12:59:18.536471"], ["id", 2]]
+  [1m[36mTRANSACTION (3.6ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [c44ccc24-bfa6-4c6b-b787-0c6840eb5813] [36m  Disk Storage (0.9ms) [0m[34mDownloaded file from key: hdgrruwhj1gytk0gk66p0xgjhlv1[0m
+[36m  Disk Storage (3.3ms) [0m[32mUploaded file to key: mvvrs8qcbfyproap8p26w4qa2i8t (checksum: VkJVIGot5n2w09P8J9LMJw==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: e99b3c01-5136-446b-91cb-83414e3efc70) to Async(default) with arguments: #<GlobalID:0x00007f01a8418b50 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/2>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.7ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 3], ["title", "japonesa"], ["created_at", "2021-05-11 12:59:18.552492"], ["updated_at", "2021-05-11 12:59:18.552492"]]
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [c44ccc24-bfa6-4c6b-b787-0c6840eb5813] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::AnalyzeJob] [c44ccc24-bfa6-4c6b-b787-0c6840eb5813]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [c44ccc24-bfa6-4c6b-b787-0c6840eb5813]   [1m[36mActiveStorage::Blob Update (0.2ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [c44ccc24-bfa6-4c6b-b787-0c6840eb5813]   [1m[36mTRANSACTION (4.1ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [c44ccc24-bfa6-4c6b-b787-0c6840eb5813] Performed ActiveStorage::AnalyzeJob (Job ID: c44ccc24-bfa6-4c6b-b787-0c6840eb5813) from Async(default) in 73.55ms
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [e99b3c01-5136-446b-91cb-83414e3efc70] Performing ActiveStorage::AnalyzeJob (Job ID: e99b3c01-5136-446b-91cb-83414e3efc70) from Async(default) enqueued at 2021-05-11T12:59:18Z with arguments: #<GlobalID:0x00007f01ac015b58 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/2>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 3], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 3], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (0.2ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "vgywpq8z7zjieqk76lk6exd3f4jq"], ["filename", "japonese.jpeg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 71527], ["checksum", "VroUMJbl9i+K077scUgt4A=="], ["created_at", "2021-05-11 12:59:18.581154"]]
+  [1m[36mActiveStorage::Attachment Create (0.2ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 3], ["blob_id", 3], ["created_at", "2021-05-11 12:59:18.583360"]]
+  [1m[36mCategory Update (0.1ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 12:59:18.585060"], ["id", 3]]
+  [1m[36mTRANSACTION (3.5ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [e99b3c01-5136-446b-91cb-83414e3efc70] [36m  Disk Storage (6.9ms) [0m[34mDownloaded file from key: mvvrs8qcbfyproap8p26w4qa2i8t[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [e99b3c01-5136-446b-91cb-83414e3efc70] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::AnalyzeJob] [e99b3c01-5136-446b-91cb-83414e3efc70]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [e99b3c01-5136-446b-91cb-83414e3efc70]   [1m[36mActiveStorage::Blob Update (0.2ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 2]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [e99b3c01-5136-446b-91cb-83414e3efc70]   [1m[36mTRANSACTION (5.5ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [e99b3c01-5136-446b-91cb-83414e3efc70] Performed ActiveStorage::AnalyzeJob (Job ID: e99b3c01-5136-446b-91cb-83414e3efc70) from Async(default) in 29.15ms
+[36m  Disk Storage (5.8ms) [0m[32mUploaded file to key: vgywpq8z7zjieqk76lk6exd3f4jq (checksum: VroUMJbl9i+K077scUgt4A==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: 28fc5bc9-0488-4131-9bbf-d381866e9e3b) to Async(default) with arguments: #<GlobalID:0x00007f01bc0ec9e0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/3>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.2ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 4], ["title", "vegana"], ["created_at", "2021-05-11 12:59:18.605965"], ["updated_at", "2021-05-11 12:59:18.605965"]]
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [28fc5bc9-0488-4131-9bbf-d381866e9e3b] Performing ActiveStorage::AnalyzeJob (Job ID: 28fc5bc9-0488-4131-9bbf-d381866e9e3b) from Async(default) enqueued at 2021-05-11T12:59:18Z with arguments: #<GlobalID:0x00007f01ac098198 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/3>>
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 4], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 4], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (0.3ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "lb11pb8ezgy0eg2dnqnl1n7cjgua"], ["filename", "vegan.jpeg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 216914], ["checksum", "CAi1dzXvL7/PU6p21wlK9w=="], ["created_at", "2021-05-11 12:59:18.622643"]]
+  [1m[36mActiveStorage::Attachment Create (0.2ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 4], ["blob_id", 4], ["created_at", "2021-05-11 12:59:18.625903"]]
+  [1m[36mCategory Update (0.2ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 12:59:18.628381"], ["id", 4]]
+  [1m[36mTRANSACTION (3.0ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [28fc5bc9-0488-4131-9bbf-d381866e9e3b] [36m  Disk Storage (8.8ms) [0m[34mDownloaded file from key: vgywpq8z7zjieqk76lk6exd3f4jq[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [28fc5bc9-0488-4131-9bbf-d381866e9e3b] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::AnalyzeJob] [28fc5bc9-0488-4131-9bbf-d381866e9e3b]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [28fc5bc9-0488-4131-9bbf-d381866e9e3b]   [1m[36mActiveStorage::Blob Update (0.2ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 3]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [28fc5bc9-0488-4131-9bbf-d381866e9e3b]   [1m[36mTRANSACTION (3.3ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [28fc5bc9-0488-4131-9bbf-d381866e9e3b] Performed ActiveStorage::AnalyzeJob (Job ID: 28fc5bc9-0488-4131-9bbf-d381866e9e3b) from Async(default) in 29.59ms
+[36m  Disk Storage (12.5ms) [0m[32mUploaded file to key: lb11pb8ezgy0eg2dnqnl1n7cjgua (checksum: CAi1dzXvL7/PU6p21wlK9w==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: 926af4fb-e296-4ac8-8c57-780deb16647e) to Async(default) with arguments: #<GlobalID:0x00007f01bc19cde0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/4>>
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.2ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 5], ["title", "peruana"], ["created_at", "2021-05-11 12:59:18.648024"], ["updated_at", "2021-05-11 12:59:18.648024"]]
+  [1m[36mTRANSACTION (2.9ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [926af4fb-e296-4ac8-8c57-780deb16647e] Performing ActiveStorage::AnalyzeJob (Job ID: 926af4fb-e296-4ac8-8c57-780deb16647e) from Async(default) enqueued at 2021-05-11T12:59:18Z with arguments: #<GlobalID:0x00007f01ac1185f0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/4>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 5], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.0ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 5], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (0.2ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "ea2ycsnwcp5mixo5zxnnnppfwrn5"], ["filename", "peruana.jpg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 154270], ["checksum", "gV+ZcvQvV0QSJ79UeILL+g=="], ["created_at", "2021-05-11 12:59:18.666242"]]
+  [1m[36mActiveStorage::Attachment Create (0.1ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 5], ["blob_id", 5], ["created_at", "2021-05-11 12:59:18.667896"]]
+  [1m[36mCategory Update (0.2ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 12:59:18.675174"], ["id", 5]]
+  [1m[36mTRANSACTION (3.1ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [926af4fb-e296-4ac8-8c57-780deb16647e] [36m  Disk Storage (18.0ms) [0m[34mDownloaded file from key: lb11pb8ezgy0eg2dnqnl1n7cjgua[0m
+[36m  Disk Storage (2.8ms) [0m[32mUploaded file to key: ea2ycsnwcp5mixo5zxnnnppfwrn5 (checksum: gV+ZcvQvV0QSJ79UeILL+g==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: 327ab849-aa70-46c7-bd10-216419aac96c) to Async(default) with arguments: #<GlobalID:0x000055d1868f1058 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/5>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.5ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Los Sombreros"], ["description", "Nossa missão tem sido ajudar as pessoas a alcançar seus objetivos de saúde e bem-estar. Embora tenhamos mudado ao longo dos anos, nossos valores permaneceram os mesmos."], ["delivery_tax", 5.5], ["city", "São Paulo"], ["street", "Bela terra"], ["neighborhood", "Mercês"], ["number", "1393"], ["category_id", 1], ["created_at", "2021-05-11 12:59:18.701340"], ["updated_at", "2021-05-11 12:59:18.701340"]]
+  [1m[36mTRANSACTION (3.2ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [926af4fb-e296-4ac8-8c57-780deb16647e] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::AnalyzeJob] [926af4fb-e296-4ac8-8c57-780deb16647e]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 5], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [327ab849-aa70-46c7-bd10-216419aac96c] Performing ActiveStorage::AnalyzeJob (Job ID: 327ab849-aa70-46c7-bd10-216419aac96c) from Async(default) enqueued at 2021-05-11T12:59:18Z with arguments: #<GlobalID:0x000055d1875ef7f0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/5>>
+[ActiveJob] [ActiveStorage::AnalyzeJob] [926af4fb-e296-4ac8-8c57-780deb16647e]   [1m[36mActiveStorage::Blob Update (0.4ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 4]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [926af4fb-e296-4ac8-8c57-780deb16647e]   [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mrollback transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [926af4fb-e296-4ac8-8c57-780deb16647e] Performed ActiveStorage::AnalyzeJob (Job ID: 926af4fb-e296-4ac8-8c57-780deb16647e) from Async(default) in 65.06ms
+[ActiveJob] [ActiveStorage::AnalyzeJob] [327ab849-aa70-46c7-bd10-216419aac96c] [36m  Disk Storage (4.3ms) [0m[34mDownloaded file from key: ea2ycsnwcp5mixo5zxnnnppfwrn5[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [327ab849-aa70-46c7-bd10-216419aac96c] Performed ActiveStorage::AnalyzeJob (Job ID: 327ab849-aa70-46c7-bd10-216419aac96c) from Async(default) in 9.31ms
+  [1m[35m (0.8ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[36mProduct Load (0.2ms)[0m  [1m[34mSELECT "products".* FROM "products"[0m
+  [1m[36mProductCategory Load (0.2ms)[0m  [1m[34mSELECT "product_categories".* FROM "product_categories"[0m
+  [1m[36mRestaurant Load (0.4ms)[0m  [1m[34mSELECT "restaurants".* FROM "restaurants"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mRestaurant Destroy (20.3ms)[0m  [1m[31mDELETE FROM "restaurants" WHERE "restaurants"."id" = ?[0m  [["id", 1]]
+  [1m[36mTRANSACTION (5.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mCategory Load (0.4ms)[0m  [1m[34mSELECT "categories".* FROM "categories"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Attachment Load (0.3ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 1], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Destroy (0.5ms)[0m  [1m[31mDELETE FROM "active_storage_attachments" WHERE "active_storage_attachments"."id" = ?[0m  [["id", 1]]
+  [1m[36mCategory Destroy (0.2ms)[0m  [1m[31mDELETE FROM "categories" WHERE "categories"."id" = ?[0m  [["id", 1]]
+  [1m[36mTRANSACTION (4.9ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.4ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] Enqueued ActiveStorage::PurgeJob (Job ID: 8b72b6bc-9c8d-46e4-8a27-714d5a131caf) to Async(default) with arguments: #<GlobalID:0x0000564f2dbfb0d0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/1>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Attachment Load (0.4ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 2], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Destroy (0.8ms)[0m  [1m[31mDELETE FROM "active_storage_attachments" WHERE "active_storage_attachments"."id" = ?[0m  [["id", 2]]
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[36mActiveStorage::Blob Load (0.5ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCategory Destroy (0.2ms)[0m  [1m[31mDELETE FROM "categories" WHERE "categories"."id" = ?[0m  [["id", 2]]
+  [1m[36mTRANSACTION (4.7ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf] Performing ActiveStorage::PurgeJob (Job ID: 8b72b6bc-9c8d-46e4-8a27-714d5a131caf) from Async(default) enqueued at 2021-05-11T12:59:51Z with arguments: #<GlobalID:0x0000564f2df485d0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/1>>
+  [1m[36mActiveStorage::Blob Load (0.3ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+[ActiveJob] Enqueued ActiveStorage::PurgeJob (Job ID: de4f5c52-9e5a-4b18-8215-913e181b66dc) to Async(default) with arguments: #<GlobalID:0x0000564f2e58ace0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/2>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Attachment Load (0.2ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 3], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Destroy (1.3ms)[0m  [1m[31mDELETE FROM "active_storage_attachments" WHERE "active_storage_attachments"."id" = ?[0m  [["id", 3]]
+  [1m[36mCategory Destroy (0.3ms)[0m  [1m[31mDELETE FROM "categories" WHERE "categories"."id" = ?[0m  [["id", 3]]
+  [1m[36mTRANSACTION (4.6ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf]   [1m[36mTRANSACTION (0.3ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+[ActiveJob] Enqueued ActiveStorage::PurgeJob (Job ID: 3c8672a4-787f-43ee-b73d-f243a60ee62c) to Async(default) with arguments: #<GlobalID:0x0000564f2e69a860 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/3>>
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 4], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Destroy (0.3ms)[0m  [1m[31mDELETE FROM "active_storage_attachments" WHERE "active_storage_attachments"."id" = ?[0m  [["id", 4]]
+  [1m[36mCategory Destroy (0.3ms)[0m  [1m[31mDELETE FROM "categories" WHERE "categories"."id" = ?[0m  [["id", 4]]
+  [1m[36mTRANSACTION (5012.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf]   [1m[36mActiveStorage::Attachment Exists? (0.6ms)[0m  [1m[34mSELECT 1 AS one FROM "active_storage_attachments" WHERE "active_storage_attachments"."blob_id" = ? LIMIT ?[0m  [["blob_id", 1], ["LIMIT", 1]]
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[31mrollback transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.8ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf]   [1m[36mActiveStorage::VariantRecord Load (0.2ms)[0m  [1m[34mSELECT "active_storage_variant_records".* FROM "active_storage_variant_records" WHERE "active_storage_variant_records"."blob_id" = ?[0m  [["blob_id", 1]]
+  [1m[36mActiveStorage::Blob Load (0.7ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c] Performing ActiveStorage::PurgeJob (Job ID: 3c8672a4-787f-43ee-b73d-f243a60ee62c) from Async(default) enqueued at 2021-05-11T12:59:51Z with arguments: #<GlobalID:0x0000564f2ec9e400 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/3>>
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc] Performing ActiveStorage::PurgeJob (Job ID: de4f5c52-9e5a-4b18-8215-913e181b66dc) from Async(default) enqueued at 2021-05-11T12:59:51Z with arguments: #<GlobalID:0x0000564f2ec9c5b0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/2>>
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf]   [1m[36mActiveStorage::Attachment Load (0.2ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 1], ["record_type", "ActiveStorage::Blob"], ["name", "preview_image"], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc]   [1m[36mActiveStorage::Attachment Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "active_storage_attachments" WHERE "active_storage_attachments"."blob_id" = ? LIMIT ?[0m  [["blob_id", 2], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc]   [1m[36mActiveStorage::VariantRecord Load (0.7ms)[0m  [1m[34mSELECT "active_storage_variant_records".* FROM "active_storage_variant_records" WHERE "active_storage_variant_records"."blob_id" = ?[0m  [["blob_id", 2]]
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c]   [1m[36mActiveStorage::Attachment Exists? (0.4ms)[0m  [1m[34mSELECT 1 AS one FROM "active_storage_attachments" WHERE "active_storage_attachments"."blob_id" = ? LIMIT ?[0m  [["blob_id", 3], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c]   [1m[36mActiveStorage::VariantRecord Load (0.3ms)[0m  [1m[34mSELECT "active_storage_variant_records".* FROM "active_storage_variant_records" WHERE "active_storage_variant_records"."blob_id" = ?[0m  [["blob_id", 3]]
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c]   [1m[36mActiveStorage::Attachment Load (0.2ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 3], ["record_type", "ActiveStorage::Blob"], ["name", "preview_image"], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c]   [1m[36mActiveStorage::Blob Destroy (1.7ms)[0m  [1m[31mDELETE FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ?[0m  [["id", 3]]
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c]   [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mrollback transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [3c8672a4-787f-43ee-b73d-f243a60ee62c] Error performing ActiveStorage::PurgeJob (Job ID: 3c8672a4-787f-43ee-b73d-f243a60ee62c) from Async(default) in 25.48ms: ActiveRecord::StatementInvalid (SQLite3::BusyException: database is locked):
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:108:in `step'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:108:in `block in each'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:107:in `loop'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:107:in `each'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:56:in `to_a'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:56:in `block (2 levels) in exec_query'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/dependencies/interlock.rb:48:in `block in permit_concurrent_loads'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/share_lock.rb:187:in `yield_shares'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/dependencies/interlock.rb:47:in `permit_concurrent_loads'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:47:in `block in exec_query'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:696:in `block (2 levels) in log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:26:in `block (2 levels) in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `block in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:695:in `block in log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications/instrumenter.rb:24:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:687:in `log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:46:in `exec_query'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:74:in `exec_delete'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/database_statements.rb:185:in `delete'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/query_cache.rb:22:in `delete'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:395:in `_delete_record'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:877:in `_delete_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:873:in `destroy_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/counter_cache.rb:176:in `destroy_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/locking/optimistic.rb:120:in `destroy_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:539:in `destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/callbacks.rb:439:in `block in destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:106:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:824:in `_run_destroy_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/callbacks.rb:439:in `destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:294:in `block in destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:354:in `block in with_transaction_returning_status'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/database_statements.rb:320:in `block in transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:310:in `block in within_new_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:26:in `block (2 levels) in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `block in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:308:in `within_new_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/database_statements.rb:320:in `transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:350:in `with_transaction_returning_status'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:294:in `destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activestorage-6.1.3.2/app/models/active_storage/blob.rb:296:in `purge'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activestorage-6.1.3.2/app/jobs/active_storage/purge_job.rb:11:in `perform'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:48:in `block in perform_now'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:117:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/i18n-1.8.10/lib/i18n.rb:314:in `with_locale'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/translation.rb:9:in `block (2 levels) in <module:Translation>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/core_ext/time/zones.rb:66:in `use_zone'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/timezones.rb:9:in `block (2 levels) in <module:Timezones>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:21:in `block in instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications.rb:203:in `block in instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications/instrumenter.rb:24:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications.rb:203:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:31:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:14:in `block (2 levels) in <module:Instrumentation>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:22:in `block in tag_logger'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:99:in `block in tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:37:in `tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:99:in `tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:22:in `tag_logger'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:15:in `block (2 levels) in <module:Logging>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:137:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:47:in `perform_now'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:25:in `block in execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:117:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/railtie.rb:47:in `block (4 levels) in <class:Railtie>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/execution_wrapper.rb:88:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/reloader.rb:72:in `block in wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/execution_wrapper.rb:88:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/reloader.rb:71:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/railtie.rb:46:in `block (3 levels) in <class:Railtie>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:137:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:23:in `execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/queue_adapters/async_adapter.rb:70:in `perform'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:363:in `run_task'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `block (3 levels) in create_worker'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:335:in `loop'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:335:in `block (2 levels) in create_worker'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `catch'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block in create_worker'
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc]   [1m[36mActiveStorage::Attachment Load (0.4ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 2], ["record_type", "ActiveStorage::Blob"], ["name", "preview_image"], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf]   [1m[36mActiveStorage::Blob Destroy (0.4ms)[0m  [1m[31mDELETE FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ?[0m  [["id", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc]   [1m[36mActiveStorage::Blob Destroy (0.4ms)[0m  [1m[31mDELETE FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ?[0m  [["id", 2]]
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc]   [1m[36mTRANSACTION (0.4ms)[0m  [1m[31mrollback transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf]   [1m[36mTRANSACTION (5007.8ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf]   [1m[36mTRANSACTION (1.1ms)[0m  [1m[31mrollback transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [8b72b6bc-9c8d-46e4-8a27-714d5a131caf] Error performing ActiveStorage::PurgeJob (Job ID: 8b72b6bc-9c8d-46e4-8a27-714d5a131caf) from Async(default) in 10183.0ms: ActiveRecord::StatementInvalid (SQLite3::BusyException: database is locked):
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/resultset.rb:170:in `step'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/resultset.rb:170:in `next_hash'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/resultset.rb:105:in `next'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/resultset.rb:133:in `each'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/database.rb:202:in `to_a'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/database.rb:202:in `block in execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/database.rb:151:in `prepare'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/database.rb:193:in `execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/database.rb:650:in `commit'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:93:in `block in commit_db_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:696:in `block (2 levels) in log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:26:in `block (2 levels) in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `block in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:695:in `block in log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications/instrumenter.rb:24:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:687:in `log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:93:in `commit_db_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:210:in `commit'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:294:in `block in commit_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:26:in `block (2 levels) in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `block in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:285:in `commit_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:340:in `block in within_new_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:26:in `block (2 levels) in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `block in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:308:in `within_new_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/database_statements.rb:320:in `transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:350:in `with_transaction_returning_status'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:294:in `destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activestorage-6.1.3.2/app/models/active_storage/blob.rb:296:in `purge'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activestorage-6.1.3.2/app/jobs/active_storage/purge_job.rb:11:in `perform'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:48:in `block in perform_now'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:117:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/i18n-1.8.10/lib/i18n.rb:314:in `with_locale'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/translation.rb:9:in `block (2 levels) in <module:Translation>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/core_ext/time/zones.rb:66:in `use_zone'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/timezones.rb:9:in `block (2 levels) in <module:Timezones>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:21:in `block in instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications.rb:203:in `block in instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications/instrumenter.rb:24:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications.rb:203:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:31:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:14:in `block (2 levels) in <module:Instrumentation>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:22:in `block in tag_logger'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:99:in `block in tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:37:in `tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:99:in `tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:22:in `tag_logger'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:15:in `block (2 levels) in <module:Logging>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:137:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:47:in `perform_now'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:25:in `block in execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:117:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/railtie.rb:47:in `block (4 levels) in <class:Railtie>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/execution_wrapper.rb:88:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/reloader.rb:72:in `block in wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/execution_wrapper.rb:88:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/reloader.rb:71:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/railtie.rb:46:in `block (3 levels) in <class:Railtie>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:137:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:23:in `execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/queue_adapters/async_adapter.rb:70:in `perform'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:363:in `run_task'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `block (3 levels) in create_worker'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:335:in `loop'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:335:in `block (2 levels) in create_worker'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `catch'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block in create_worker'
+[ActiveJob] [ActiveStorage::PurgeJob] [de4f5c52-9e5a-4b18-8215-913e181b66dc] Error performing ActiveStorage::PurgeJob (Job ID: de4f5c52-9e5a-4b18-8215-913e181b66dc) from Async(default) in 5041.14ms: ActiveRecord::StatementInvalid (SQLite3::BusyException: database is locked):
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:108:in `step'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:108:in `block in each'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:107:in `loop'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/sqlite3-1.4.2/lib/sqlite3/statement.rb:107:in `each'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:56:in `to_a'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:56:in `block (2 levels) in exec_query'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/dependencies/interlock.rb:48:in `block in permit_concurrent_loads'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/share_lock.rb:187:in `yield_shares'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/dependencies/interlock.rb:47:in `permit_concurrent_loads'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:47:in `block in exec_query'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:696:in `block (2 levels) in log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:26:in `block (2 levels) in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `block in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:695:in `block in log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications/instrumenter.rb:24:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract_adapter.rb:687:in `log'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:46:in `exec_query'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/sqlite3/database_statements.rb:74:in `exec_delete'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/database_statements.rb:185:in `delete'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/query_cache.rb:22:in `delete'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:395:in `_delete_record'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:877:in `_delete_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:873:in `destroy_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/counter_cache.rb:176:in `destroy_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/locking/optimistic.rb:120:in `destroy_row'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/persistence.rb:539:in `destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/callbacks.rb:439:in `block in destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:106:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:824:in `_run_destroy_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/callbacks.rb:439:in `destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:294:in `block in destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:354:in `block in with_transaction_returning_status'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/database_statements.rb:320:in `block in transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:310:in `block in within_new_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:26:in `block (2 levels) in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:25:in `block in synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/transaction.rb:308:in `within_new_transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/connection_adapters/abstract/database_statements.rb:320:in `transaction'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:350:in `with_transaction_returning_status'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activerecord-6.1.3.2/lib/active_record/transactions.rb:294:in `destroy'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activestorage-6.1.3.2/app/models/active_storage/blob.rb:296:in `purge'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activestorage-6.1.3.2/app/jobs/active_storage/purge_job.rb:11:in `perform'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:48:in `block in perform_now'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:117:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/i18n-1.8.10/lib/i18n.rb:314:in `with_locale'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/translation.rb:9:in `block (2 levels) in <module:Translation>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/core_ext/time/zones.rb:66:in `use_zone'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/timezones.rb:9:in `block (2 levels) in <module:Timezones>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:21:in `block in instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications.rb:203:in `block in instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications/instrumenter.rb:24:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/notifications.rb:203:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:31:in `instrument'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/instrumentation.rb:14:in `block (2 levels) in <module:Instrumentation>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:22:in `block in tag_logger'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:99:in `block in tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:37:in `tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/tagged_logging.rb:99:in `tagged'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:22:in `tag_logger'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/logging.rb:15:in `block (2 levels) in <module:Logging>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:137:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:47:in `perform_now'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:25:in `block in execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:117:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/railtie.rb:47:in `block (4 levels) in <class:Railtie>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/execution_wrapper.rb:88:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/reloader.rb:72:in `block in wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/execution_wrapper.rb:88:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/reloader.rb:71:in `wrap'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/railtie.rb:46:in `block (3 levels) in <class:Railtie>'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `instance_exec'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:126:in `block in run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activesupport-6.1.3.2/lib/active_support/callbacks.rb:137:in `run_callbacks'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/execution.rb:23:in `execute'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/activejob-6.1.3.2/lib/active_job/queue_adapters/async_adapter.rb:70:in `perform'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:363:in `run_task'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `block (3 levels) in create_worker'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:335:in `loop'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:335:in `block (2 levels) in create_worker'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `catch'
+/home/marinasantos/.rvm/gems/ruby-3.0.1/gems/concurrent-ruby-1.1.8/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block in create_worker'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.5ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 1], ["title", "mexicana"], ["created_at", "2021-05-11 13:00:07.813514"], ["updated_at", "2021-05-11 13:00:07.813514"]]
+  [1m[36mTRANSACTION (24.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.4ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 1], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 1], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (0.5ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "0oxnmszqwj882g7uwujikf6v06v0"], ["filename", "mexican.jpg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 164392], ["checksum", "GQF9otxCszErHnwhJPtaXQ=="], ["created_at", "2021-05-11 13:00:07.897819"]]
+  [1m[36mActiveStorage::Attachment Create (0.7ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 1], ["blob_id", 6], ["created_at", "2021-05-11 13:00:07.902753"]]
+  [1m[36mCategory Update (0.3ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 13:00:07.905915"], ["id", 1]]
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[36mcommit transaction[0m
+[36m  Disk Storage (4.0ms) [0m[32mUploaded file to key: 0oxnmszqwj882g7uwujikf6v06v0 (checksum: GQF9otxCszErHnwhJPtaXQ==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: 86dc39ef-837b-43d9-8dc2-907905624f9e) to Async(default) with arguments: #<GlobalID:0x0000564f2f813ba0 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/6>>
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 6], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [86dc39ef-837b-43d9-8dc2-907905624f9e] Performing ActiveStorage::AnalyzeJob (Job ID: 86dc39ef-837b-43d9-8dc2-907905624f9e) from Async(default) enqueued at 2021-05-11T13:00:07Z with arguments: #<GlobalID:0x00007fb81c055948 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/6>>
+[ActiveJob] [ActiveStorage::AnalyzeJob] [86dc39ef-837b-43d9-8dc2-907905624f9e] [36m  Disk Storage (0.5ms) [0m[34mDownloaded file from key: 0oxnmszqwj882g7uwujikf6v06v0[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [86dc39ef-837b-43d9-8dc2-907905624f9e] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::AnalyzeJob] [86dc39ef-837b-43d9-8dc2-907905624f9e]   [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [86dc39ef-837b-43d9-8dc2-907905624f9e]   [1m[36mActiveStorage::Blob Update (1.2ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 6]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [86dc39ef-837b-43d9-8dc2-907905624f9e]   [1m[36mTRANSACTION (6.6ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [86dc39ef-837b-43d9-8dc2-907905624f9e] Performed ActiveStorage::AnalyzeJob (Job ID: 86dc39ef-837b-43d9-8dc2-907905624f9e) from Async(default) in 30.08ms
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.7ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 2], ["title", "italiana"], ["created_at", "2021-05-11 13:00:08.035253"], ["updated_at", "2021-05-11 13:00:08.035253"]]
+  [1m[36mTRANSACTION (4.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 2], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.2ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 2], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (1.1ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "g3ktc5egmw8gdt5tqafwzu6frgp0"], ["filename", "italian.jpeg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 125653], ["checksum", "VkJVIGot5n2w09P8J9LMJw=="], ["created_at", "2021-05-11 13:00:08.088629"]]
+  [1m[36mActiveStorage::Attachment Create (0.4ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 2], ["blob_id", 7], ["created_at", "2021-05-11 13:00:08.092739"]]
+  [1m[36mCategory Update (0.3ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 13:00:08.095626"], ["id", 2]]
+  [1m[36mTRANSACTION (4.3ms)[0m  [1m[36mcommit transaction[0m
+[36m  Disk Storage (5.3ms) [0m[32mUploaded file to key: g3ktc5egmw8gdt5tqafwzu6frgp0 (checksum: VkJVIGot5n2w09P8J9LMJw==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: d5ba4e71-2369-47bf-a59d-248e888bede4) to Async(default) with arguments: #<GlobalID:0x0000564f2f4125d8 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/7>>
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 7], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d5ba4e71-2369-47bf-a59d-248e888bede4] Performing ActiveStorage::AnalyzeJob (Job ID: d5ba4e71-2369-47bf-a59d-248e888bede4) from Async(default) enqueued at 2021-05-11T13:00:08Z with arguments: #<GlobalID:0x0000564f2f402fe8 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/7>>
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d5ba4e71-2369-47bf-a59d-248e888bede4] [36m  Disk Storage (0.9ms) [0m[34mDownloaded file from key: g3ktc5egmw8gdt5tqafwzu6frgp0[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d5ba4e71-2369-47bf-a59d-248e888bede4] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d5ba4e71-2369-47bf-a59d-248e888bede4]   [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d5ba4e71-2369-47bf-a59d-248e888bede4]   [1m[36mActiveStorage::Blob Update (0.9ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 7]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d5ba4e71-2369-47bf-a59d-248e888bede4]   [1m[36mTRANSACTION (3.7ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d5ba4e71-2369-47bf-a59d-248e888bede4] Performed ActiveStorage::AnalyzeJob (Job ID: d5ba4e71-2369-47bf-a59d-248e888bede4) from Async(default) in 34.48ms
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (0.4ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 3], ["title", "japonesa"], ["created_at", "2021-05-11 13:00:08.220619"], ["updated_at", "2021-05-11 13:00:08.220619"]]
+  [1m[36mTRANSACTION (3.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Blob Load (0.6ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" INNER JOIN "active_storage_attachments" ON "active_storage_blobs"."id" = "active_storage_attachments"."blob_id" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 3], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 3], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Create (0.4ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "lp4l75geyl14dk9kkcur3xst6fal"], ["filename", "japonese.jpeg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 71527], ["checksum", "VroUMJbl9i+K077scUgt4A=="], ["created_at", "2021-05-11 13:00:08.274516"]]
+  [1m[36mActiveStorage::Attachment Create (0.3ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 3], ["blob_id", 8], ["created_at", "2021-05-11 13:00:08.277812"]]
+  [1m[36mCategory Update (0.2ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 13:00:08.279848"], ["id", 3]]
+  [1m[36mTRANSACTION (3.6ms)[0m  [1m[36mcommit transaction[0m
+[36m  Disk Storage (7.6ms) [0m[32mUploaded file to key: lp4l75geyl14dk9kkcur3xst6fal (checksum: VroUMJbl9i+K077scUgt4A==)[0m
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: b98ae8ff-7268-43b3-88bf-531edfbe40f8) to Async(default) with arguments: #<GlobalID:0x0000564f2ccc8a40 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/8>>
+  [1m[36mActiveStorage::Blob Load (0.7ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 8], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [b98ae8ff-7268-43b3-88bf-531edfbe40f8] Performing ActiveStorage::AnalyzeJob (Job ID: b98ae8ff-7268-43b3-88bf-531edfbe40f8) from Async(default) enqueued at 2021-05-11T13:00:08Z with arguments: #<GlobalID:0x0000564f2cae3838 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/8>>
+[ActiveJob] [ActiveStorage::AnalyzeJob] [b98ae8ff-7268-43b3-88bf-531edfbe40f8] [36m  Disk Storage (0.3ms) [0m[34mDownloaded file from key: lp4l75geyl14dk9kkcur3xst6fal[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [b98ae8ff-7268-43b3-88bf-531edfbe40f8] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::AnalyzeJob] [b98ae8ff-7268-43b3-88bf-531edfbe40f8]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [b98ae8ff-7268-43b3-88bf-531edfbe40f8]   [1m[36mActiveStorage::Blob Update (0.4ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 8]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [b98ae8ff-7268-43b3-88bf-531edfbe40f8]   [1m[36mTRANSACTION (3.5ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [b98ae8ff-7268-43b3-88bf-531edfbe40f8] Performed ActiveStorage::AnalyzeJob (Job ID: b98ae8ff-7268-43b3-88bf-531edfbe40f8) from Async(default) in 11.6ms
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (1.0ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 4], ["title", "vegana"], ["created_at", "2021-05-11 13:00:08.394721"], ["updated_at", "2021-05-11 13:00:08.394721"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mrollback transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveStorage::Attachment Destroy (0.4ms)[0m  [1m[31mDELETE FROM "active_storage_attachments" WHERE "active_storage_attachments"."id" = ?[0m  [["id", 8]]
+  [1m[36mActiveStorage::Blob Create (0.5ms)[0m  [1m[32mINSERT INTO "active_storage_blobs" ("key", "filename", "content_type", "metadata", "service_name", "byte_size", "checksum", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["key", "h6wprywcd1o1ueg49d6d865pw97r"], ["filename", "vegan.jpeg"], ["content_type", "image/jpeg"], ["metadata", "{\"identified\":true}"], ["service_name", "local"], ["byte_size", 216914], ["checksum", "CAi1dzXvL7/PU6p21wlK9w=="], ["created_at", "2021-05-11 13:00:08.448963"]]
+  [1m[36mActiveStorage::Attachment Create (0.3ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("name", "record_type", "record_id", "blob_id", "created_at") VALUES (?, ?, ?, ?, ?)[0m  [["name", "image"], ["record_type", "Category"], ["record_id", 3], ["blob_id", 9], ["created_at", "2021-05-11 13:00:08.453072"]]
+  [1m[36mCategory Update (0.3ms)[0m  [1m[33mUPDATE "categories" SET "updated_at" = ? WHERE "categories"."id" = ?[0m  [["updated_at", "2021-05-11 13:00:08.455212"], ["id", 3]]
+  [1m[36mTRANSACTION (3.5ms)[0m  [1m[36mcommit transaction[0m
+[36m  Disk Storage (5.7ms) [0m[32mUploaded file to key: h6wprywcd1o1ueg49d6d865pw97r (checksum: CAi1dzXvL7/PU6p21wlK9w==)[0m
+[ActiveJob] Enqueued ActiveStorage::PurgeJob (Job ID: 934d0077-7e04-425b-8a8c-d2d4ce7f5f16) to Async(default) with arguments: #<GlobalID:0x0000564f2f4b8410 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/8>>
+[ActiveJob] Enqueued ActiveStorage::AnalyzeJob (Job ID: d8f8546d-f536-436a-a7c4-d7c2e334eed6) to Async(default) with arguments: #<GlobalID:0x0000564f2f4b07d8 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/9>>
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 8], ["LIMIT", 1]]
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 9], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16] Performing ActiveStorage::PurgeJob (Job ID: 934d0077-7e04-425b-8a8c-d2d4ce7f5f16) from Async(default) enqueued at 2021-05-11T13:00:08Z with arguments: #<GlobalID:0x0000564f2f49ac30 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/8>>
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d8f8546d-f536-436a-a7c4-d7c2e334eed6] Performing ActiveStorage::AnalyzeJob (Job ID: d8f8546d-f536-436a-a7c4-d7c2e334eed6) from Async(default) enqueued at 2021-05-11T13:00:08Z with arguments: #<GlobalID:0x0000564f2f498a98 @uri=#<URI::GID gid://one-bit-food/ActiveStorage::Blob/9>>
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16]   [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16]   [1m[36mActiveStorage::Attachment Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "active_storage_attachments" WHERE "active_storage_attachments"."blob_id" = ? LIMIT ?[0m  [["blob_id", 8], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16]   [1m[36mActiveStorage::VariantRecord Load (0.2ms)[0m  [1m[34mSELECT "active_storage_variant_records".* FROM "active_storage_variant_records" WHERE "active_storage_variant_records"."blob_id" = ?[0m  [["blob_id", 8]]
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16]   [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 8], ["record_type", "ActiveStorage::Blob"], ["name", "preview_image"], ["LIMIT", 1]]
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16]   [1m[36mActiveStorage::Blob Destroy (0.6ms)[0m  [1m[31mDELETE FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ?[0m  [["id", 8]]
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d8f8546d-f536-436a-a7c4-d7c2e334eed6] [36m  Disk Storage (12.3ms) [0m[34mDownloaded file from key: h6wprywcd1o1ueg49d6d865pw97r[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16]   [1m[36mTRANSACTION (4.7ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d8f8546d-f536-436a-a7c4-d7c2e334eed6] Skipping image analysis because the mini_magick gem isn't installed
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16] [36m  Disk Storage (1.3ms) [0m[31mDeleted file from key: lp4l75geyl14dk9kkcur3xst6fal[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d8f8546d-f536-436a-a7c4-d7c2e334eed6]   [1m[36mTRANSACTION (0.3ms)[0m  [1m[36mbegin transaction[0m
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16] [36m  Disk Storage (0.3ms) [0m[31mDeleted files by key prefix: variants/lp4l75geyl14dk9kkcur3xst6fal/[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d8f8546d-f536-436a-a7c4-d7c2e334eed6]   [1m[36mActiveStorage::Blob Update (0.5ms)[0m  [1m[33mUPDATE "active_storage_blobs" SET "metadata" = ? WHERE "active_storage_blobs"."id" = ?[0m  [["metadata", "{\"identified\":true,\"analyzed\":true}"], ["id", 9]]
+[ActiveJob] [ActiveStorage::PurgeJob] [934d0077-7e04-425b-8a8c-d2d4ce7f5f16] Performed ActiveStorage::PurgeJob (Job ID: 934d0077-7e04-425b-8a8c-d2d4ce7f5f16) from Async(default) in 45.23ms
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d8f8546d-f536-436a-a7c4-d7c2e334eed6]   [1m[36mTRANSACTION (3.7ms)[0m  [1m[36mcommit transaction[0m
+[ActiveJob] [ActiveStorage::AnalyzeJob] [d8f8546d-f536-436a-a7c4-d7c2e334eed6] Performed ActiveStorage::AnalyzeJob (Job ID: d8f8546d-f536-436a-a7c4-d7c2e334eed6) from Async(default) in 51.41ms
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Create (1.2ms)[0m  [1m[32mINSERT INTO "categories" ("id", "title", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["id", 5], ["title", "peruana"], ["created_at", "2021-05-11 13:00:10.299111"], ["updated_at", "2021-05-11 13:00:10.299111"]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[31mrollback transaction[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.6ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.3ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Los Sombreros"], ["description", "Nossa missão tem sido ajudar as pessoas a alcançar seus objetivos de saúde e bem-estar. Embora tenhamos mudado ao longo dos anos, nossos valores permaneceram os mesmos."], ["delivery_tax", 5.5], ["city", "São Paulo"], ["street", "Bela terra"], ["neighborhood", "Mercês"], ["number", "1393"], ["category_id", 1], ["created_at", "2021-05-11 13:01:55.358329"], ["updated_at", "2021-05-11 13:01:55.358329"]]
+  [1m[36mTRANSACTION (8.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.4ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Pratos Mexicanos"], ["restaurant_id", 2], ["created_at", "2021-05-11 13:01:55.438163"], ["updated_at", "2021-05-11 13:01:55.438163"]]
+  [1m[36mTRANSACTION (6.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.7ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Nacho Guacamole"], ["description", "Tortilhas com Guacamole"], ["price", 19.0], ["product_category_id", 1], ["created_at", "2021-05-11 13:01:55.487817"], ["updated_at", "2021-05-11 13:01:55.487817"]]
+  [1m[36mTRANSACTION (3.9ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.5ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Nacho"], ["description", "Tortilhas com milho"], ["price", 19.0], ["product_category_id", 1], ["created_at", "2021-05-11 13:01:57.866778"], ["updated_at", "2021-05-11 13:01:57.866778"]]
+  [1m[36mTRANSACTION (25.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.6ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Los Sombreros - CWB"], ["description", "Nossa missão tem sido ajudar as pessoas a alcançar seus objetivos de saúde e bem-estar. Embora tenhamos mudado ao longo dos anos, nossos valores permaneceram os mesmos."], ["delivery_tax", 5.5], ["city", "Curitiba"], ["street", "Bela terra"], ["neighborhood", "Mercês"], ["number", "1393"], ["category_id", 1], ["created_at", "2021-05-11 13:02:08.529520"], ["updated_at", "2021-05-11 13:02:08.529520"]]
+  [1m[36mTRANSACTION (7.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (1.1ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Pratos Mexicanos"], ["restaurant_id", 3], ["created_at", "2021-05-11 13:02:08.589798"], ["updated_at", "2021-05-11 13:02:08.589798"]]
+  [1m[36mTRANSACTION (7.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Nacho Guacamole"], ["description", "Tortilhas com Guacamole"], ["price", 19.0], ["product_category_id", 2], ["created_at", "2021-05-11 13:02:08.636084"], ["updated_at", "2021-05-11 13:02:08.636084"]]
+  [1m[36mTRANSACTION (6.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.3ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Nacho"], ["description", "Tortilhas com milho"], ["price", 19.0], ["product_category_id", 2], ["created_at", "2021-05-11 13:02:08.711234"], ["updated_at", "2021-05-11 13:02:08.711234"]]
+  [1m[36mTRANSACTION (5.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.4ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Ola Que Tal"], ["description", "Para alcançar e manter essa distinção em comida e vinho, serviço, ambiente e ambiente, o restaurante ganha reputação de primeira classe por gastronomia, hospitalidade graciosa e informada, conforto e beleza que atraem clientes novos e repetidos ano após ano."], ["delivery_tax", 5.5], ["city", "São Paulo"], ["street", "Aminta de Barros"], ["neighborhood", "Centro"], ["number", "659"], ["category_id", 1], ["created_at", "2021-05-11 13:02:16.469630"], ["updated_at", "2021-05-11 13:02:16.469630"]]
+  [1m[36mTRANSACTION (4.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.3ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Pratos Mexicanos"], ["restaurant_id", 4], ["created_at", "2021-05-11 13:02:16.531547"], ["updated_at", "2021-05-11 13:02:16.531547"]]
+  [1m[36mTRANSACTION (6.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.3ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Burrito"], ["description", "Tortilhas com Guacamole"], ["price", 19.0], ["product_category_id", 3], ["created_at", "2021-05-11 13:02:16.569938"], ["updated_at", "2021-05-11 13:02:16.569938"]]
+  [1m[36mTRANSACTION (4.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.5ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Quesadilha"], ["description", "Tortilhas de queijo"], ["price", 25.0], ["product_category_id", 3], ["created_at", "2021-05-11 13:02:16.643344"], ["updated_at", "2021-05-11 13:02:16.643344"]]
+  [1m[36mTRANSACTION (7.9ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.3ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Ola Que Tal - CWB"], ["description", "Para alcançar e manter essa distinção em comida e vinho, serviço, ambiente e ambiente, o restaurante ganha reputação de primeira classe por gastronomia, hospitalidade graciosa e informada, conforto e beleza que atraem clientes novos e repetidos ano após ano."], ["delivery_tax", 5.5], ["city", "Curitiba"], ["street", "Aminta de Barros"], ["neighborhood", "Centro"], ["number", "659"], ["category_id", 1], ["created_at", "2021-05-11 13:02:25.814317"], ["updated_at", "2021-05-11 13:02:25.814317"]]
+  [1m[36mTRANSACTION (24.9ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.7ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Pratos Mexicanos"], ["restaurant_id", 5], ["created_at", "2021-05-11 13:02:25.893854"], ["updated_at", "2021-05-11 13:02:25.893854"]]
+  [1m[36mTRANSACTION (5.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.5ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Burrito"], ["description", "Tortilhas com Guacamole"], ["price", 19.0], ["product_category_id", 4], ["created_at", "2021-05-11 13:02:25.937342"], ["updated_at", "2021-05-11 13:02:25.937342"]]
+  [1m[36mTRANSACTION (4.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.9ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Quesadilha"], ["description", "Tortilhas de queijo"], ["price", 25.0], ["product_category_id", 4], ["created_at", "2021-05-11 13:02:26.010109"], ["updated_at", "2021-05-11 13:02:26.010109"]]
+  [1m[36mTRANSACTION (5.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.4ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Bravo"], ["description", "Estamos empenhados em usar os melhores ingredientes em nossas receitas. Nenhum alimento deixa a nossa cozinha que nós mesmos não comeríamos."], ["delivery_tax", 3.5], ["city", "São Paulo"], ["street", "Rua via mar"], ["neighborhood", "Centro"], ["number", "250"], ["category_id", 2], ["created_at", "2021-05-11 13:02:36.019283"], ["updated_at", "2021-05-11 13:02:36.019283"]]
+  [1m[36mTRANSACTION (24.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.6ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Porções"], ["restaurant_id", 6], ["created_at", "2021-05-11 13:02:36.106979"], ["updated_at", "2021-05-11 13:02:36.106979"]]
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.3ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Berinjela à parmegiana"], ["description", "Com arroz e fritas"], ["price", 78.0], ["product_category_id", 5], ["created_at", "2021-05-11 13:02:36.155593"], ["updated_at", "2021-05-11 13:02:36.155593"]]
+  [1m[36mTRANSACTION (4.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Fritas"], ["description", "Bata frita com bacon"], ["price", 35.0], ["product_category_id", 5], ["created_at", "2021-05-11 13:02:38.259656"], ["updated_at", "2021-05-11 13:02:38.259656"]]
+  [1m[36mTRANSACTION (24.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.4ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Bravo - Maceio"], ["description", "Estamos empenhados em usar os melhores ingredientes em nossas receitas. Nenhum alimento deixa a nossa cozinha que nós mesmos não comeríamos."], ["delivery_tax", 3.5], ["city", "Maceio"], ["street", "Rua via mar"], ["neighborhood", "Centro"], ["number", "250"], ["category_id", 2], ["created_at", "2021-05-11 13:02:48.780907"], ["updated_at", "2021-05-11 13:02:48.780907"]]
+  [1m[36mTRANSACTION (8.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.5ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Porções"], ["restaurant_id", 7], ["created_at", "2021-05-11 13:02:48.846451"], ["updated_at", "2021-05-11 13:02:48.846451"]]
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.9ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Berinjela à parmegiana"], ["description", "Com arroz e fritas"], ["price", 78.0], ["product_category_id", 6], ["created_at", "2021-05-11 13:02:48.888886"], ["updated_at", "2021-05-11 13:02:48.888886"]]
+  [1m[36mTRANSACTION (4.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.5ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Fritas"], ["description", "Bata frita com bacon"], ["price", 35.0], ["product_category_id", 6], ["created_at", "2021-05-11 13:02:57.395253"], ["updated_at", "2021-05-11 13:02:57.395253"]]
+  [1m[36mTRANSACTION (8.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.4ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "La Pergoletti"], ["description", "Nossa missão é estabelecer relações comerciais benéficas com diversos fornecedores que compartilham nosso compromisso com o atendimento ao cliente, qualidade e preços competitivos."], ["delivery_tax", 6.7], ["city", "São Paulo"], ["street", "Rua Joaquim Pinto"], ["neighborhood", "Vila Gomes Cardim"], ["number", "929"], ["category_id", 2], ["created_at", "2021-05-11 13:03:00.068786"], ["updated_at", "2021-05-11 13:03:00.068786"]]
+  [1m[36mTRANSACTION (24.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.5ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Fogazzas (Individuais)"], ["restaurant_id", 8], ["created_at", "2021-05-11 13:03:00.172725"], ["updated_at", "2021-05-11 13:03:00.172725"]]
+  [1m[36mTRANSACTION (6.2ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.5ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Fogazza Bacon"], ["description", "Bacon, parmesão e mussarela."], ["price", 12.0], ["product_category_id", 7], ["created_at", "2021-05-11 13:03:00.221215"], ["updated_at", "2021-05-11 13:03:00.221215"]]
+  [1m[36mTRANSACTION (4.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Fogazza A moda da Casa"], ["description", "Calabresa, bacon, palmito e mussarela."], ["price", 12.0], ["product_category_id", 7], ["created_at", "2021-05-11 13:03:11.654580"], ["updated_at", "2021-05-11 13:03:11.654580"]]
+  [1m[36mTRANSACTION (4.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.7ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Sushi Eterno"], ["description", "Existimos para garantir que cada hóspede receba um serviço rápido, profissional, amigável e cortês."], ["delivery_tax", 7.5], ["city", "São Paulo"], ["street", "Avenida Manoel Domingos Pinto"], ["neighborhood", "Parque Anhangüera"], ["number", "507"], ["category_id", 3], ["created_at", "2021-05-11 13:03:14.316035"], ["updated_at", "2021-05-11 13:03:14.316035"]]
+  [1m[36mTRANSACTION (8.3ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.5ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Entrada"], ["restaurant_id", 9], ["created_at", "2021-05-11 13:03:14.389663"], ["updated_at", "2021-05-11 13:03:14.389663"]]
+  [1m[36mTRANSACTION (4.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (1.3ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Temaki"], ["description", "Enrolado de arroz com alga marinha em forma de cone"], ["price", 19.99], ["product_category_id", 8], ["created_at", "2021-05-11 13:03:14.433957"], ["updated_at", "2021-05-11 13:03:14.433957"]]
+  [1m[36mTRANSACTION (5.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Sashimi"], ["description", "Peixe cru fatiado, salmao, atum e peixe prego"], ["price", 30.9], ["product_category_id", 8], ["created_at", "2021-05-11 13:03:14.520970"], ["updated_at", "2021-05-11 13:03:14.520970"]]
+  [1m[36mTRANSACTION (4.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.3ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Sushi Eterno - Maceio"], ["description", "Existimos para garantir que cada hóspede receba um serviço rápido, profissional, amigável e cortês."], ["delivery_tax", 7.5], ["city", "Maceio"], ["street", "Avenida do mar"], ["neighborhood", "Belo mar"], ["number", "2344"], ["category_id", 3], ["created_at", "2021-05-11 13:03:22.685992"], ["updated_at", "2021-05-11 13:03:22.685992"]]
+  [1m[36mTRANSACTION (25.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.4ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Entrada"], ["restaurant_id", 10], ["created_at", "2021-05-11 13:03:22.765112"], ["updated_at", "2021-05-11 13:03:22.765112"]]
+  [1m[36mTRANSACTION (5.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Temaki"], ["description", "Enrolado de arroz com alga marinha em forma de cone"], ["price", 19.99], ["product_category_id", 9], ["created_at", "2021-05-11 13:03:22.806086"], ["updated_at", "2021-05-11 13:03:22.806086"]]
+  [1m[36mTRANSACTION (4.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.6ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Sashimi"], ["description", "Peixe cru fatiado, salmao, atum e peixe prego"], ["price", 30.9], ["product_category_id", 9], ["created_at", "2021-05-11 13:03:24.043712"], ["updated_at", "2021-05-11 13:03:24.043712"]]
+  [1m[36mTRANSACTION (8.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.3ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Okuyamah"], ["description", "Restaurante conceituado, vencedor por 5 vezes como melhor restaurante Japones de São Paulo."], ["delivery_tax", 8.3], ["city", "São Paulo"], ["street", "Rua Francisco Artassio"], ["neighborhood", "Jardim das Laranjeiras"], ["number", "134"], ["category_id", 3], ["created_at", "2021-05-11 13:03:43.661034"], ["updated_at", "2021-05-11 13:03:43.661034"]]
+  [1m[36mTRANSACTION (8.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.5ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Entrada"], ["restaurant_id", 11], ["created_at", "2021-05-11 13:03:43.723495"], ["updated_at", "2021-05-11 13:03:43.723495"]]
+  [1m[36mTRANSACTION (5.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.5ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Hossomaki 16 unidades"], ["description", "Enrolado fino com folha de alga marinha por fora."], ["price", 20.9], ["product_category_id", 10], ["created_at", "2021-05-11 13:03:43.770294"], ["updated_at", "2021-05-11 13:03:43.770294"]]
+  [1m[36mTRANSACTION (3.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.3ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Hot roll - 10 unidades"], ["description", "10 unidades."], ["price", 12.0], ["product_category_id", 10], ["created_at", "2021-05-11 13:03:44.876020"], ["updated_at", "2021-05-11 13:03:44.876020"]]
+  [1m[36mTRANSACTION (7.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.4ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Okuyamah - Maceio"], ["description", "Restaurante conceituado, vencedor por 5 vezes como melhor restaurante Japones de São Paulo."], ["delivery_tax", 8.3], ["city", "Maceio"], ["street", "Rua Francisco Artassio"], ["neighborhood", "Jardim das Laranjeiras"], ["number", "134"], ["category_id", 3], ["created_at", "2021-05-11 13:04:01.595917"], ["updated_at", "2021-05-11 13:04:01.595917"]]
+  [1m[36mTRANSACTION (7.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.3ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Entrada"], ["restaurant_id", 12], ["created_at", "2021-05-11 13:04:01.664228"], ["updated_at", "2021-05-11 13:04:01.664228"]]
+  [1m[36mTRANSACTION (4.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Hossomaki 16 unidades"], ["description", "Enrolado fino com folha de alga marinha por fora."], ["price", 20.9], ["product_category_id", 11], ["created_at", "2021-05-11 13:04:01.707409"], ["updated_at", "2021-05-11 13:04:01.707409"]]
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.3ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Hot roll - 10 unidades"], ["description", "10 unidades."], ["price", 12.0], ["product_category_id", 11], ["created_at", "2021-05-11 13:04:02.900513"], ["updated_at", "2021-05-11 13:04:02.900513"]]
+  [1m[36mTRANSACTION (7.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.5ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Club Life"], ["description", "NOSSA ESPECIALIDADE. pratos vegetais de alta qualidade,com opções de alimentos integrais, sem glúten e sem lactose."], ["delivery_tax", 5.7], ["city", "São Paulo"], ["street", "Alameda dos Uapês"], ["neighborhood", "Planalto Paulista"], ["number", "933"], ["category_id", 4], ["created_at", "2021-05-11 13:04:14.076960"], ["updated_at", "2021-05-11 13:04:14.076960"]]
+  [1m[36mTRANSACTION (23.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.3ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Saladas, molhos e wraps"], ["restaurant_id", 13], ["created_at", "2021-05-11 13:04:14.162707"], ["updated_at", "2021-05-11 13:04:14.162707"]]
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.7ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Coleslaw"], ["description", "Repolho roxo, couve, cenoura, cebola, maionese de castanha e xylitol"], ["price", 8.99], ["product_category_id", 12], ["created_at", "2021-05-11 13:04:14.208841"], ["updated_at", "2021-05-11 13:04:14.208841"]]
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Side salad"], ["description", "Mix de folhas com cenoura ralada, tomatinho sweet e semente de girassol."], ["price", 9.9], ["product_category_id", 12], ["created_at", "2021-05-11 13:04:14.285947"], ["updated_at", "2021-05-11 13:04:14.285947"]]
+  [1m[36mTRANSACTION (3.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mCategory Load (0.1ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mRestaurant Create (0.3ms)[0m  [1m[32mINSERT INTO "restaurants" ("name", "description", "delivery_tax", "city", "street", "neighborhood", "number", "category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Casa Natural"], ["description", "Oferecemos, desde 1981, refeições ovo-lacto-vegetarianas, leves, saudáveis, balanceadas e principalmente saborosas, procurando aliar o sabor, a qualidade de vida e o bem-estar dos clientes."], ["delivery_tax", 8.3], ["city", "São Paulo"], ["street", "Rua Natal"], ["neighborhood", "Cantinho do Céu"], ["number", "938"], ["category_id", 4], ["created_at", "2021-05-11 13:04:23.763786"], ["updated_at", "2021-05-11 13:04:23.763786"]]
+  [1m[36mTRANSACTION (25.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProductCategory Create (0.8ms)[0m  [1m[32mINSERT INTO "product_categories" ("title", "restaurant_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["title", "Saladas, molhos e wraps"], ["restaurant_id", 14], ["created_at", "2021-05-11 13:04:23.883435"], ["updated_at", "2021-05-11 13:04:23.883435"]]
+  [1m[36mTRANSACTION (3.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.4ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Salada de quinoa"], ["description", "Alface americana, roxa, frisee, quinoa cozida, cenoura, tomate, damasco dessecado, amendoa crua."], ["price", 20.9], ["product_category_id", 13], ["created_at", "2021-05-11 13:04:23.937208"], ["updated_at", "2021-05-11 13:04:23.937208"]]
+  [1m[36mTRANSACTION (3.4ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mProduct Create (0.3ms)[0m  [1m[32mINSERT INTO "products" ("name", "description", "price", "product_category_id", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?)[0m  [["name", "Coleslaw"], ["description", "Repolho roxo, couve, cenoura, cebola, maionese de castanha e xylitol"], ["price", 11.0], ["product_category_id", 13], ["created_at", "2021-05-11 13:04:24.990268"], ["updated_at", "2021-05-11 13:04:24.990268"]]
+  [1m[36mTRANSACTION (7.9ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mRestaurant Load (1.1ms)[0m  [1m[34mSELECT "restaurants".* FROM "restaurants"[0m
+  [1m[36mRestaurant Load (1.0ms)[0m  [1m[34mSELECT "restaurants".* FROM "restaurants"[0m
+Started GET "/api/categories" for 127.0.0.1 at 2021-05-11 10:17:25 -0300
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by CategoriesController#index as JSON
+  Rendering categories/index.json.jbuilder
+  [1m[36mCategory Load (0.4ms)[0m  [1m[34mSELECT "categories".* FROM "categories" ORDER BY "categories"."title" ASC[0m
+  ↳ app/views/categories/index.json.jbuilder:1
+  [1m[36mActiveStorage::Attachment Load (0.7ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 2], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Blob Load (0.3ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 7], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Attachment Load (0.2ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 3], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Blob Load (0.1ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 9], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Attachment Load (0.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 1], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 6], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Attachment Load (0.2ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 5], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 5], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Attachment Load (0.2ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = ? AND "active_storage_attachments"."record_type" = ? AND "active_storage_attachments"."name" = ? LIMIT ?[0m  [["record_id", 4], ["record_type", "Category"], ["name", "image"], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  [1m[36mActiveStorage::Blob Load (0.2ms)[0m  [1m[34mSELECT "active_storage_blobs".* FROM "active_storage_blobs" WHERE "active_storage_blobs"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+  ↳ app/views/categories/index.json.jbuilder:4
+  Rendered categories/index.json.jbuilder (Duration: 212.6ms | Allocations: 29067)
+Completed 200 OK in 229ms (Views: 198.7ms | ActiveRecord: 18.4ms | Allocations: 34154)
+
+
