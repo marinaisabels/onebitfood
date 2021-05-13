@@ -1,3 +1,3 @@
-json.array! @restaurants do |restaurants|
-    json.partial! restarurant 
+json.array! @restaurants do |restaurant|
+    json.partial! restaurant
 end
